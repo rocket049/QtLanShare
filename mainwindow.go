@@ -46,6 +46,7 @@ func main() {
 	app := widgets.NewQApplication(len(os.Args), os.Args)
 	window = widgets.NewQMainWindow(nil, core.Qt__Window)
 	window.SetWindowTitle("Qt Lan Share")
+	window.SetFixedHeight(400)
 	createGui(window)
 	app.SetActiveWindow(window)
 	window.Show()

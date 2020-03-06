@@ -26,7 +26,8 @@ func showImg(parent widgets.QWidget_ITF, fn, title string) {
 	dlg.SetFixedWidth(img.Width())
 	dlg.SetFixedHeight(img.Height())
 	pos := window.Pos()
-	pos.SetX(pos.X() + window.Width() + imgNum*img.Width())
+	pos.SetX(pos.X() + imgNum*img.Width())
+	pos.SetY(pos.Y() + window.Geometry().Height())
 	dlg.Move(pos)
 	dlg.Show()
 	imgNum++
