@@ -87,7 +87,7 @@ func createGui(parent *widgets.QMainWindow) {
 
 	buttonShare.ConnectClicked(func(b bool) {
 		path1 := widgets.QFileDialog_GetExistingDirectory(window, "Select share path", share.Get(), widgets.QFileDialog__ShowDirsOnly)
-		if len(path1) {
+		if len(path1) == 0 {
 			return
 		}
 		share.Set(path1)
@@ -96,7 +96,7 @@ func createGui(parent *widgets.QMainWindow) {
 
 	buttonUpload.ConnectClicked(func(b bool) {
 		path1 := widgets.QFileDialog_GetExistingDirectory(window, "Select upload path", uploadDir, widgets.QFileDialog__ShowDirsOnly)
-		if len(path1) {
+		if len(path1) == 0 {
 			return
 		}
 		uploadDir = path1
