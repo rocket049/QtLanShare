@@ -59,6 +59,9 @@ func (s *shareDir) ListDir(realPath string) []dirItem {
 	res := []dirItem{}
 	var typ string
 	for i, v := range infos {
+		if strings.HasPrefix(v.Name(), ".") {
+			continue
+		}
 		tail := ""
 		if v.IsDir() {
 			typ = "D"
@@ -85,6 +88,10 @@ func setShareDir(dir string) {
 
 func handleShare(w http.ResponseWriter, r *http.Request) {
 	//fileServ.ServeHTTP(w, r)
+	if strings.Contains("/"+r.URL.Path[lenShareBase:], "/.") {
+		w.WriteHeader(404)
+		return
+	}
 	realPath := share.GetRealPath(r.URL.Path[lenShareBase:])
 	switch share.GetType(realPath) {
 	case 0:
