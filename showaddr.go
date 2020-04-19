@@ -13,7 +13,7 @@ var imgNum = 0
 
 func showImg(parent widgets.QWidget_ITF, fn, title string) {
 	dlg := widgets.NewQDialog(parent, core.Qt__Dialog)
-	img := gui.NewQPixmap3(fn, "", core.Qt__NoFormatConversion)
+	img := gui.NewQPixmap5(fn, "", core.Qt__NoFormatConversion)
 	label := widgets.NewQLabel(dlg, core.Qt__Widget)
 	label.SetPixmap(img)
 	dlg.Layout().AddWidget(label)

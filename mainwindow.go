@@ -61,17 +61,17 @@ func createGui(parent *widgets.QMainWindow) {
 
 	buttonShare := widgets.NewQPushButton2("Share Path", window)
 	buttonShare.SetFixedWidth(100)
-	grid.AddWidget2(buttonShare, 0, 0, 0)
+	grid.AddWidget(buttonShare, 0, 0, 0)
 
 	labelShare := widgets.NewQLabel2(share.Get(), window, core.Qt__Widget)
-	grid.AddWidget2(labelShare, 0, 1, 0)
+	grid.AddWidget(labelShare, 0, 1, 0)
 
 	buttonUpload := widgets.NewQPushButton2("Upload Path", window)
 	buttonUpload.SetFixedWidth(100)
-	grid.AddWidget2(buttonUpload, 1, 0, 0)
+	grid.AddWidget(buttonUpload, 1, 0, 0)
 
 	labelUpload := widgets.NewQLabel2(uploadDir, window, core.Qt__Widget)
-	grid.AddWidget2(labelUpload, 1, 1, 0)
+	grid.AddWidget(labelUpload, 1, 1, 0)
 
 	console = widgets.NewQTextEdit(window)
 	console.SetReadOnly(true)
