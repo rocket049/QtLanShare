@@ -2,9 +2,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/therecipe/qt/gui"
 
@@ -28,18 +31,12 @@ func main() {
 	var share1 = flag.String("share", "", "share path")
 	var upload1 = flag.String("upload", "", "upload path")
 	flag.Parse()
-	home, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
-	if *share1 == "" {
-		setShareDir(home)
-	} else {
+
+	loadConf()
+	if *share1 != "" {
 		setShareDir(*share1)
 	}
-	if *upload1 == "" {
-		setUploadDir(home)
-	} else {
+	if *upload1 != "" {
 		setUploadDir(*upload1)
 	}
 
@@ -51,6 +48,54 @@ func main() {
 	app.SetActiveWindow(window)
 	window.Show()
 	app.Exec()
+}
+
+func saveConf(uploadPath, sharePath string) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	cfgDir := filepath.Join(home, ".config", "QtLanShare")
+	os.MkdirAll(cfgDir, os.ModePerm)
+	fp, err := os.Create(filepath.Join(cfgDir, "paths.json"))
+	if err != nil {
+		return err
+	}
+	defer fp.Close()
+	var cfg struct {
+		UploadPath string
+		SharePath  string
+	}
+	cfg.UploadPath = uploadPath
+	cfg.SharePath = sharePath
+	data, err := json.Marshal(&cfg)
+	if err != nil {
+		return err
+	}
+	_, err = fp.Write(data)
+	return err
+}
+
+func loadConf() error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	cfgPath := filepath.Join(home, ".config", "QtLanShare", "paths.json")
+	data, err := ioutil.ReadFile(cfgPath)
+	var cfg struct {
+		UploadPath string
+		SharePath  string
+	}
+
+	err = json.Unmarshal(data, &cfg)
+	if err != nil {
+		cfg.SharePath = home
+		cfg.UploadPath = home
+	}
+	setUploadDir(cfg.UploadPath)
+	setShareDir(cfg.SharePath)
+	return nil
 }
 
 func createGui(parent *widgets.QMainWindow) {
@@ -92,6 +137,7 @@ func createGui(parent *widgets.QMainWindow) {
 		}
 		share.Set(path1)
 		labelShare.SetText(path1)
+		saveConf(uploadDir, share.Get())
 	})
 
 	buttonUpload.ConnectClicked(func(b bool) {
@@ -101,5 +147,6 @@ func createGui(parent *widgets.QMainWindow) {
 		}
 		uploadDir = path1
 		labelUpload.SetText(path1)
+		saveConf(uploadDir, share.Get())
 	})
 }
