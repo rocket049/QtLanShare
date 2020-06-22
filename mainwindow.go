@@ -11,6 +11,7 @@ import (
 
 	"github.com/therecipe/qt/gui"
 
+	"gitee.com/rocket049/discover-go"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"
 )
@@ -118,16 +119,35 @@ func createGui(parent *widgets.QMainWindow) {
 	labelUpload := widgets.NewQLabel2(uploadDir, window, core.Qt__Widget)
 	grid.AddWidget(labelUpload, 1, 1, 0)
 
+	buttonScan := widgets.NewQPushButton2("Scan Servers", window)
+	grid.AddWidget3(buttonScan, 2, 0, 1, 2, 0)
+
 	console = widgets.NewQTextEdit(window)
 	console.SetReadOnly(true)
-	grid.AddWidget3(console, 2, 0, 1, 2, 0)
+	grid.AddWidget3(console, 3, 0, 1, 2, 0)
 
 	window.SetLayout(grid)
 	parent.SetCentralWidget(window)
 
+	scanServers := func() {
+		client := discover.NewClient()
+		services := client.Query()
+		console.Append("Found Servers:")
+		for i := range services {
+			console.Append(services[i].Href)
+		}
+		console.Append("OK\n")
+	}
+
+	buttonScan.ConnectClicked(func(b bool) {
+		scanServers()
+	})
+
 	window.ConnectShowEvent(func(e *gui.QShowEvent) {
 		go runServer()
-		showAddr()
+		ips := showAddr()
+		runDiscover(ips)
+		scanServers()
 	})
 
 	buttonShare.ConnectClicked(func(b bool) {
